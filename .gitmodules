@@ -1,0 +1,3 @@
+[submodule "fluentpdo"]
+	path = fluentpdo
+	url = https://github.com/lichtner/fluentpdo.git
