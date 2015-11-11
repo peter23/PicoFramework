@@ -1,8 +1,8 @@
 <?php
 
-	require('core.php');
+	require('system/core.php');
 
-	require('custom.php');
+	require('app/custom.php');
 
 	$q = isset($_GET['q']) ? rtrim($_GET['q'], ' /') : '';
 	if(!$q)  $q = '/default';

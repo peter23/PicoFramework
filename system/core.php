@@ -25,7 +25,7 @@
 		if(isset($configs[$name])) {
 			return $configs[$name];
 		} else {
-			$file = 'config/'.$name.'.php';
+			$file = 'app/config/'.$name.'.php';
 			if(!allowIncludeFile($file)) {
 				throw new LoadException('Config "'.$name.'" can not be loaded');
 			} else {
@@ -37,7 +37,7 @@
 
 
 	function runController($name) {
-		$file = 'controllers'.$name.'.php';
+		$file = 'app/controllers'.$name.'.php';
 		if(!allowIncludeFile($file)) {
 			throw new LoadException('Controller "'.$name.'" can not be loaded');
 		} else {
@@ -54,7 +54,7 @@
 
 
 	function runView($name, $data = array()) {
-		$file = 'views'.$name.'.php';
+		$file = 'app/views'.$name.'.php';
 		if(!allowIncludeFile($file)) {
 			throw new LoadException('View "'.$name.'" can not be loaded');
 		} else {
@@ -72,7 +72,7 @@
 
 
 	function initDatabase() {
-		require('FluentPDO/FluentPDO.php');
+		require('system/fluentpdo/FluentPDO/FluentPDO.php');
 		$cfg = getConfig('db');
 		$pdo = new PDO('mysql:host='.$cfg['HOST'].';dbname='.$cfg['NAME'].';charset=utf8', $cfg['USER'], $cfg['PASS']);
 		$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
@@ -81,6 +81,7 @@
 
 
 	function getModel($name) {
+		//it is singleton, isn't it?
 		static $models, $DB;
 		if(!isset($models)) {
 			$models = array();
@@ -89,7 +90,7 @@
 		if(isset($models[$name])) {
 			return $models[$name];
 		} else {
-			$file = 'models'.$name.'.php';
+			$file = 'app/models'.$name.'.php';
 			if(!allowIncludeFile($file)) {
 				throw new LoadException('Model "'.$name.'" can not be loaded');
 			} else {
