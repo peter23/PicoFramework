@@ -1,5 +1,9 @@
 <?php
 
+
+	define('ROOT_DIR', dirname(__DIR__));
+
+
 	// ===== CORE
 
 	function allowIncludeFile($file) {
@@ -25,7 +29,7 @@
 		if(isset($configs[$name])) {
 			return $configs[$name];
 		} else {
-			$file = 'app/config/'.$name.'.php';
+			$file = ROOT_DIR.'/app/config/'.$name.'.php';
 			if(!allowIncludeFile($file)) {
 				throw new LoadException('Config "'.$name.'" can not be loaded');
 			} else {
@@ -37,12 +41,24 @@
 
 
 	function runController($name) {
-		$file = 'app/controllers'.$name.'.php';
-		if(!allowIncludeFile($file)) {
-			throw new LoadException('Controller "'.$name.'" can not be loaded');
-		} else {
-			require($file);
-		}
+		//here is very-super-light and stupid routing
+		$try_name = $name;
+		do {
+			$file = ROOT_DIR.'/app/controllers'.$try_name.'.php';
+			if(allowIncludeFile($file)) {
+				if(strlen($try_name) != strlen($name)) {
+					$qparam_controllers = getConfig('qparam_controllers');
+					if(isset($qparam_controllers[$try_name])) {
+						$_QPARAM = substr($name, strlen($try_name)+1);
+					} else {
+						break;
+					}
+				}
+				require($file);
+				return;
+			}
+		} while( ($try_name = dirname($try_name)) && (strlen($try_name) > 1) );
+		throw new LoadException('Controller "'.$name.'" can not be loaded');
 	}
 
 
@@ -54,7 +70,7 @@
 
 
 	function runView($name, $data = array()) {
-		$file = 'app/views'.$name.'.php';
+		$file = ROOT_DIR.'/app/views/'.$name.'.php';
 		if(!allowIncludeFile($file)) {
 			throw new LoadException('View "'.$name.'" can not be loaded');
 		} else {
@@ -72,7 +88,7 @@
 
 
 	function initDatabase() {
-		require('system/fluentpdo/FluentPDO/FluentPDO.php');
+		require_once(ROOT_DIR.'/system/fluentpdo/FluentPDO/FluentPDO.php');
 		$cfg = getConfig('db');
 		$pdo = new PDO('mysql:host='.$cfg['HOST'].';dbname='.$cfg['NAME'].';charset=utf8', $cfg['USER'], $cfg['PASS']);
 		$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
@@ -80,24 +96,24 @@
 	}
 
 
-	function getModel($name) {
+	function getModule($name) {
 		//it is singleton, isn't it?
-		static $models, $DB;
-		if(!isset($models)) {
-			$models = array();
+		static $modules, $DB;
+		if(!isset($modules)) {
+			$modules = array();
 			$DB = initDatabase();
 		}
-		if(isset($models[$name])) {
-			return $models[$name];
+		if(isset($modules[$name])) {
+			return $modules[$name];
 		} else {
-			$file = 'app/models'.$name.'.php';
+			$file = ROOT_DIR.'/modules/'.$name.'.php';
 			if(!allowIncludeFile($file)) {
-				throw new LoadException('Model "'.$name.'" can not be loaded');
+				throw new LoadException('Module "'.$name.'" can not be loaded');
 			} else {
 				require($file);
-				$classname = preg_replace('#[^a-z0-9\_]#i', '_', 'Model'.$name);
-				$models[$name] = new $classname($DB);
-				return $models[$name];
+				$classname = preg_replace('#[^a-z0-9\_]#i', '_', 'Module_'.$name);
+				$modules[$name] = new $classname($DB);
+				return $modules[$name];
 			}
 		}
 	}
@@ -134,24 +150,7 @@
 		echo(_HE($s));
 	}
 
-	function setSessionMessage($type, $msg) {
-		if(!isset($_SESSION['session_messages']) || !is_array($_SESSION['session_messages'])) {
-			$_SESSION['session_messages'] = array();
-		}
-		$_SESSION['session_messages'][$type] = $msg;
-	}
-
-	function getSessionMessages() {
-		if(isset($_SESSION['session_messages']) && is_array($_SESSION['session_messages'])) {
-			$ret = $_SESSION['session_messages'];
-			unset($_SESSION['session_messages']);
-			return $ret;
-		} else {
-			return array();
-		}
-	}
-
-	function formatException($e) {
+	function formatException(&$e) {
 		$trace = $e->getTrace();
 		foreach($trace as &$trace1) {
 			$trace1 = $trace1['file'].':'.$trace1['line'].':'.$trace1['function'];
@@ -160,20 +159,10 @@
 		return "\n".$e->getMessage()."\n".implode("\n", $trace)."\n";
 	}
 
-	function generateRandomString($length) {
-		$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-		$charactersLength = strlen($characters);
-		$randomString = '';
-		for($i = 0; $i < $length; $i++) {
-			$randomString .= $characters[mt_rand(0, $charactersLength - 1)];
-		}
-		return $randomString;
-	}
 
 
-
-	// ===== BASIC MODEL
-	class BaseModel {
+	// ===== BASE MODULE
+	class BaseModule {
 
 		protected $DB;
 

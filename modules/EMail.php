@@ -1,6 +1,6 @@
 <?php
 
-	class Model_EMail extends BaseModel {
+	class Module_EMail extends BaseModule {
 
 		public function sendView($to, $view, $view_data = array(), $from_email = false, $from_name = false) {
 			$text = getRunView($view, $view_data);
@@ -30,5 +30,3 @@
 		}
 
 	}
-
-?>
