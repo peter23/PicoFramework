@@ -25,19 +25,28 @@
 			if(!isset($this->data['onetime_messages']) || !is_array($this->data['onetime_messages'])) {
 				$this->data['onetime_messages'] = array();
 			}
-			$this->data['onetime_messages'][$type] = $msg;
+			$this->data['onetime_messages'][$type][] = $msg;
 			$this->write();
 		}
 
-		public function getOneTimeMessages() {
-			if(isset($this->data['onetime_messages']) && is_array($this->data['onetime_messages'])) {
-				$ret = $this->data['onetime_messages'];
-				unset($this->data['onetime_messages']);
-				$this->write();
-				return $ret;
-			} else {
-				return array();
+		public function getOneTimeMessages($types) {
+			$need_write = false;
+			if(!is_array($types)) {
+				$types = array($types);
 			}
+			foreach($types as $type) {
+				if(isset($this->data['onetime_messages'][$type])) {
+					$ret[$type] = $this->data['onetime_messages'][$type];
+					unset($this->data['onetime_messages'][$type]);
+					$need_write = true;
+				} else {
+					$ret[$type] = array();
+				}
+			}
+			if($need_write) {
+				$this->write();
+			}
+			return $ret;
 		}
 
 	}
