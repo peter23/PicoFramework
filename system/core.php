@@ -33,7 +33,7 @@
 			if(!allowIncludeFile($file)) {
 				throw new LoadException('Config "'.$name.'" can not be loaded');
 			} else {
-				$configs[$name] = require($file);
+				$configs[$name] = include($file);
 				return $configs[$name];
 			}
 		}
@@ -54,7 +54,7 @@
 						break;
 					}
 				}
-				require($file);
+				include($file);
 				return;
 			}
 		} while( ($try_name = dirname($try_name)) && (strlen($try_name) > 1) );
@@ -75,7 +75,7 @@
 			throw new LoadException('View "'.$name.'" can not be loaded');
 		} else {
 			extract($data);
-			require($file);
+			include($file);
 		}
 	}
 
@@ -88,11 +88,9 @@
 
 
 	function initDatabase() {
-		require_once(ROOT_DIR.'/system/fluentpdo/FluentPDO/FluentPDO.php');
+		require_once(ROOT_DIR.'/system/fluentpdo/FluentPDO.php');
 		$cfg = getConfig('db');
-		$pdo = new PDO('mysql:host='.$cfg['HOST'].';dbname='.$cfg['NAME'].';charset=utf8', $cfg['USER'], $cfg['PASS']);
-		$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
-		return new FluentPDO($pdo);
+		return new FluentPDO('mysql:host='.$cfg['HOST'].';dbname='.$cfg['NAME'].';charset=utf8', $cfg['USER'], $cfg['PASS']);
 	}
 
 
@@ -110,7 +108,7 @@
 			if(!allowIncludeFile($file)) {
 				throw new LoadException('Module "'.$name.'" can not be loaded');
 			} else {
-				require($file);
+				include($file);
 				$classname = preg_replace('#[^a-z0-9\_]#i', '_', 'Module_'.$name);
 				$modules[$name] = new $classname($DB);
 				return $modules[$name];
