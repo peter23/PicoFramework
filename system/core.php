@@ -6,6 +6,19 @@
 
 	// ===== CORE
 
+	function processRequest() {
+		$q = isset($_GET['q']) ? rtrim($_GET['q'], ' /') : '';
+		if(!$q)  $q = '/';
+
+		try {
+			runController($q);
+		} catch(LoadException $e) {
+			error_log(formatException($e));
+			runController('/_404');
+		}
+	}
+
+
 	function allowIncludeFile($file) {
 		if(
 			(strpos($file, '../')!==false)
@@ -55,7 +68,7 @@
 						if(isset($qparam_controllers[$try_name])) {
 							$_QPARAM = substr($name, strlen($try_name)+1);
 						} else {
-							break;
+							break 2;
 						}
 					}
 					extract($data);
@@ -80,7 +93,7 @@
 		if(!allowIncludeFile($file)) {
 			throw new LoadException('View "'.$name.'" can not be loaded');
 		} else {
-			extract($data);
+			extract(htmlEscape($data));
 			include($file);
 		}
 	}
@@ -110,7 +123,7 @@
 		if(isset($modules[$name])) {
 			return $modules[$name];
 		} else {
-			$file = ROOT_DIR.'/modules/'.$name.'.php';
+			$file = ROOT_DIR.'/app/modules/'.$name.'.php';
 			if(!allowIncludeFile($file)) {
 				throw new LoadException('Module "'.$name.'" can not be loaded');
 			} else {
@@ -144,14 +157,26 @@
 		return $cfg['STATIC_BASE_URL'].$q;
 	}
 
-	// html escape
-	function _HE($s) {
-		return htmlspecialchars($s, ENT_QUOTES, 'UTF-8');
+	//quite unique
+	define('DONT_ESCAPE', '^%DONT_ESCAPE_'.microtime(true));
+
+	function htmlEscape($s) {
+		if(!is_array($s)) {
+			return htmlspecialchars($s, ENT_QUOTES, 'UTF-8');
+		} else {
+			if((count($s) == 2) && isset($s[0]) && ($s[0] == DONT_ESCAPE)) {
+				return $s[1];
+			} else {
+				foreach($s as &$s1) {
+					$s1 = htmlEscape($s1);
+				} unset($s1);
+				return $s;
+			}
+		}
 	}
 
-	// echo html escape
-	function _EH($s) {
-		echo(_HE($s));
+	function dontHtmlEscape($v) {
+		return array(DONT_ESCAPE, $v);
 	}
 
 	function formatException(&$e) {
