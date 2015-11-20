@@ -6,8 +6,8 @@
 
 	// ===== CORE
 
-	function processRequest() {
-		$q = isset($_GET['q']) ? rtrim($_GET['q'], ' /') : '';
+	function processRequest($q) {
+		$q = rtrim($q, ' /');
 		if(!$q)  $q = '/';
 
 		try {
@@ -34,21 +34,23 @@
 	}
 
 
-	function getConfig($name) {
+	function getConfig($name, $param = false) {
 		static $configs;
 		if(!isset($configs)) {
 			$configs = array();
 		}
-		if(isset($configs[$name])) {
-			return $configs[$name];
-		} else {
+		if(!isset($configs[$name])) {
 			$file = ROOT_DIR.'/app/config/'.$name.'.php';
 			if(!allowIncludeFile($file)) {
 				throw new LoadException('Config "'.$name.'" can not be loaded');
 			} else {
 				$configs[$name] = include($file);
-				return $configs[$name];
 			}
+		}
+		if(!$param) {
+			return $configs[$name];
+		} else {
+			return $configs[$name][$param];
 		}
 	}
 
@@ -120,9 +122,7 @@
 			$modules = array();
 			$DB = initDatabase();
 		}
-		if(isset($modules[$name])) {
-			return $modules[$name];
-		} else {
+		if(!isset($modules[$name])) {
 			$file = ROOT_DIR.'/app/modules/'.$name.'.php';
 			if(!allowIncludeFile($file)) {
 				throw new LoadException('Module "'.$name.'" can not be loaded');
@@ -130,9 +130,9 @@
 				include($file);
 				$classname = preg_replace('#[^a-z0-9\_]#i', '_', 'Module_'.$name);
 				$modules[$name] = new $classname($DB);
-				return $modules[$name];
 			}
 		}
+		return $modules[$name];
 	}
 
 
@@ -144,11 +144,20 @@
 
 	// controller url
 	function _U($q, $params = '') {
-		if(is_array($params)) {
-			$params = http_build_query($params);
-		}
 		$cfg = getConfig('paths');
-		return $cfg['BASE_URL'].'/?q='.$q.($params ? '&'.$params : $params);
+		$ret = $cfg['BASE_URL'].$q;
+		if($params) {
+			if(strpos($ret, '?') === false) {
+				$ret .= '?';
+			} else {
+				$ret .= '&';
+			}
+			if(is_array($params)) {
+				$params = http_build_query($params);
+			}
+			$ret .= $params;
+		}
+		return $ret;
 	}
 
 	// static url

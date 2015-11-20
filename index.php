@@ -4,4 +4,5 @@
 
 	require('app/custom.php');
 
-	processRequest();
+	$paths_cfg = getConfig('paths');
+	processRequest($paths_cfg['ROUTE']);
