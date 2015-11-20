@@ -5,7 +5,7 @@
 	require('app/custom.php');
 
 	$q = isset($_GET['q']) ? rtrim($_GET['q'], ' /') : '';
-	if(!$q)  $q = '/default';
+	if(!$q)  $q = '/';
 
 	try {
 		runController($q);
