@@ -144,8 +144,7 @@
 
 	// controller url
 	function _U($q, $params = '') {
-		$cfg = getConfig('paths');
-		$ret = $cfg['BASE_URL'].$q;
+		$ret = getConfig('paths', 'BASE_URL').$q;
 		if($params) {
 			if(strpos($ret, '?') === false) {
 				$ret .= '?';
@@ -162,8 +161,7 @@
 
 	// static url
 	function _US($q) {
-		$cfg = getConfig('paths');
-		return $cfg['STATIC_BASE_URL'].$q;
+		return getConfig('paths', 'STATIC_BASE_URL').$q;
 	}
 
 	//quite unique
