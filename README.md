@@ -52,3 +52,16 @@ If the file is not exists, then it will just go to the next point (do not QParam
 
 
 ### Core
+
+- `processRequest($query)`. Takes the query and run appropriate controller or /_404. Automatically called from index.php.
+- `getConfig($name[, $param])`. Loads (just `include()`s) config from `app/config` or takes it from the cache and returns it.
+- `runController($route[, $data])`. Runs (just `include()`s) appropriate controller by the given route. Makes routing. `extract()`s `$data` to controllers scope.
+- `getRunController($route[, $data])`. Makes `runController` call and returns its output as a variable.
+- runView
+- getRunView
+- initDatabase
+- getModule
+- _U
+- _US
+- htmlEscape
+- dontHtmlEscape

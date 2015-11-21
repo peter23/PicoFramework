@@ -83,9 +83,9 @@
 	}
 
 
-	function getRunController($name) {
+	function getRunController($name, $data = array()) {
 		ob_start();
-		runController($name);
+		runController($name, $data);
 		return ob_get_clean();
 	}
 
