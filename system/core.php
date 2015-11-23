@@ -164,14 +164,11 @@
 		return getConfig('paths', 'STATIC_BASE_URL').$q;
 	}
 
-	//quite unique
-	define('DONT_ESCAPE', '^%DONT_ESCAPE_'.microtime(true));
-
 	function htmlEscape($s) {
 		if(!is_array($s)) {
 			return htmlspecialchars($s, ENT_QUOTES, 'UTF-8');
 		} else {
-			if((count($s) == 2) && isset($s[0]) && ($s[0] == DONT_ESCAPE)) {
+			if(defined('DONT_ESCAPE') && (count($s) == 2) && isset($s[0]) && ($s[0] == DONT_ESCAPE)) {
 				return $s[1];
 			} else {
 				foreach($s as &$s1) {
@@ -183,6 +180,10 @@
 	}
 
 	function dontHtmlEscape($v) {
+		if(!defined('DONT_ESCAPE')) {
+			//quite unique
+			define('DONT_ESCAPE', '^%DONT_ESCAPE_'.microtime(true));
+		}
 		return array(DONT_ESCAPE, $v);
 	}
 
