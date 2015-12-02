@@ -9,6 +9,7 @@
 
 		public function __construct() {
 			session_name($this->session_name);
+			session_set_cookie_params(86400);
 			session_start();
 			if(!isset($_SESSION[$this->session_internal_name]))  $_SESSION[$this->session_internal_name] = array();
 			$this->data = $_SESSION[$this->session_internal_name];
