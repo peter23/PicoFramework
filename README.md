@@ -37,7 +37,7 @@ Framework takes a route from a config "paths", an element "ROUTE". Then it searc
 2) `app/controllers/hello/world/123/_default.php`
 
 3) `app/controllers/hello/world.php`
-This controller will be used only if there is "/hello/world" element in "qparam_controllers" config. Also "123" will be put in `$_QPARAM` variable (in controllers scope).
+This controller will be used only if there is "/hello/world" element in "qparam_controllers" config. Also "123" will be put in `$_QPARAM` variable (in controller's scope).
 If there is no "/hello/world" in "qparam_controllers" config, then processing of this route will be stopped and LoadException will be thrown.
 
 4) `app/controllers/hello/world/_default.php`. QParam mechanism will work similarly to the point 3.
@@ -53,12 +53,12 @@ If the file is not exists, then it will just go to the next point (do not QParam
 
 ### Core
 
-- `processRequest($query)`. Takes the query and run appropriate controller or /_404. Automatically called from index.php.
-- `getConfig($name[, $param])`. Loads (just `include()`s) config from `app/config` or takes it from the cache and returns it.
-- `runController($route[, $data])`. Runs (just `include()`s) appropriate controller by the given route. Makes routing. `extract()`s `$data` to controllers scope.
-- `getRunController($route[, $data])`. Makes `runController` call and returns its output as a variable.
-- runView
-- getRunView
+- `processRequest ($query)`. Takes the query and runs appropriate controller or /_404. It automatically called from index.php.
+- `getConfig ($name[, $param])`. Loads (just `include()`s) config from `app/config` or takes it from the cache and returns it.
+- `runController ($route[, $data])`. Runs (just `include()`s) appropriate controller by the given route. Processes routing. `extract()`s `$data` to controller's scope.
+- `getRunController ($route[, $data])`. Calls `runController` and returns its output as a variable.
+- `runView ($name[, $data])`. Runs (just `include()`s) specified view. `extract()`s `$data` to view's scope.
+- `getRunView ($name[, $data])`. Calls `runView` and returns its output as a variable.
 - initDatabase
 - getModule
 - _U
