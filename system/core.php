@@ -190,7 +190,9 @@
 	function formatException(&$e) {
 		$trace = $e->getTrace();
 		foreach($trace as &$trace1) {
-			$trace1 = $trace1['file'].':'.$trace1['line'].':'.$trace1['function'];
+			$trace1 = (isset($trace1['file']) ? $trace1['file'] : '<unknown file>')
+				.':'.(isset($trace1['line']) ? $trace1['line'] : '<unknown line>')
+				.':'.(isset($trace1['function']) ? $trace1['function'] : '<unknown function>');
 		}
 		unset($trace1);
 		return "\n".$e->getMessage()."\n".implode("\n", $trace)."\n";

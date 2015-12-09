@@ -12,6 +12,9 @@
 
 	return array(
 		'ROUTE' => $q,
-		'BASE_URL' => '/',
+		//the whole url is a route
+		'BASE_URL' => '',
+		//route is in the parameter
+		'BASE_URL' => '/?q=',
 		'STATIC_BASE_URL' => '/s',
 	);
