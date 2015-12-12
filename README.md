@@ -53,15 +53,26 @@ If the file is not exists, then it will just go to the next point (do not QParam
 
 ### Core
 
-- `processRequest ($query)`. Takes the query and runs appropriate controller or /_404. It automatically called from index.php.
-- `getConfig ($name[, $param])`. Loads (just `include()`s) config from `app/config` or takes it from the cache and returns it.
+- `processRequest ($query)`. Takes the query and runs appropriate controller or /_404. It is automatically called from index.php.
+
+- `getConfig ($name[, $param])`. Loads (just `include()`s) config from `app/config` or takes it from the cache and returns it. Config file should look like this: `<?php
+	return <something>;
+`, where `<something>` is array or just some value.
+
 - `runController ($route[, $data])`. Runs (just `include()`s) appropriate controller by the given route. Processes routing. `extract()`s `$data` to controller's scope.
+
 - `getRunController ($route[, $data])`. Calls `runController` and returns its output as a variable.
-- `runView ($name[, $data])`. Runs (just `include()`s) specified view. `extract()`s `$data` to view's scope.
+
+- `runView ($name[, $data])`. Runs (just `include()`s) specified view. `extract()`s html escaped `$data` to view's scope.
+
 - `getRunView ($name[, $data])`. Calls `runView` and returns its output as a variable.
-- initDatabase
-- getModule
-- _U
-- _US
-- htmlEscape
-- dontHtmlEscape
+
+- `getModule ($name)`. Modules are php files, which should contain class Module\_$name. All special characters in $name will be replaced with "\_". That class can extends BaseModule, which just provides $class->DB variable with FluentPDO instance. Any module will be created only once, further calls will receive existing instance (singleton).
+
+- `_U ($q[, $params])`. Returns URL of controller $q with GET parameters $params. $params can be a string or an array. It considers BASE\_URL from "paths" config.
+
+- `_US($q)`. Returns URL of static file. It considers STATIC\_BASE\_URL from "paths" config.
+
+- `htmlEscape($s)`. Returns $s with applied htmlspecialchars function. Also works with arrays. This function is automatically applied to $data in runView.
+
+- `dontHtmlEscape($s)`. Returns $s, which is marked as value which should not be escaped.
