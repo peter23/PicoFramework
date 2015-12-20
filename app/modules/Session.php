@@ -17,7 +17,7 @@
 		}
 
 		public function write() {
-			session_start();
+			@session_start();
 			$_SESSION[$this->session_internal_name] = $this->data;
 			session_write_close();
 		}
