@@ -115,7 +115,7 @@
 	}
 
 
-	function getModule($name) {
+	function getModule($name, $data = array()) {
 		//it is singleton, isn't it?
 		static $modules, $DB;
 		if(!isset($modules)) {
@@ -129,7 +129,7 @@
 			} else {
 				include($file);
 				$classname = preg_replace('#[^a-z0-9\_]#i', '_', 'Module_'.$name);
-				$modules[$name] = new $classname($DB);
+				$modules[$name] = new $classname($DB, $data);
 			}
 		}
 		return $modules[$name];
