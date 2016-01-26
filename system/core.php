@@ -198,6 +198,11 @@
 		return "\n".$e->getMessage()."\n".implode("\n", $trace)."\n";
 	}
 
+	function doRedirect($url) {
+		header('Location: '.$url);
+		die();
+	}
+
 
 
 	// ===== BASE MODULE
