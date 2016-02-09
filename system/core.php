@@ -56,6 +56,20 @@
 
 
 	function runController($name, $data = array()) {
+		//here is middleware processing
+		$middlewares = array();
+		$try_name = $name;
+		do {
+			$file = ROOT_DIR.'/app/middlewares'.$try_name.'.php';
+			if(allowIncludeFile($file)) {
+				$middlewares[] = $file;
+			}
+		} while( ($try_name = dirname($try_name)) && (strlen($try_name) > 1) );
+		$file = ROOT_DIR.'/app/middlewares/_default.php';
+		if(allowIncludeFile($file)) {
+			$middlewares[] = $file;
+		}
+
 		//here is very-super-light and stupid routing
 		$try_name = $name;
 		do {
@@ -72,6 +86,9 @@
 						} else {
 							break 2;
 						}
+					}
+					foreach($middlewares as $middleware) {
+						include($middleware);
 					}
 					extract($data);
 					include($file);
