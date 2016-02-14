@@ -35,22 +35,21 @@
 
 
 	function getConfig($name, $param = false) {
-		static $configs;
-		if(!isset($configs)) {
-			$configs = array();
-		}
-		if(!isset($configs[$name])) {
+		$repo_key = 'getConfig|'.$name;
+		$config = dataRepo($repo_key);
+		if($config == null) {
 			$file = ROOT_DIR.'/app/config/'.$name.'.php';
 			if(!allowIncludeFile($file)) {
 				throw new LoadException('Config "'.$name.'" can not be loaded');
 			} else {
-				$configs[$name] = include($file);
+				$config = include($file);
+				dataRepo($repo_key, $config);
 			}
 		}
 		if(!$param) {
-			return $configs[$name];
+			return $config;
 		} else {
-			return $configs[$name][$param];
+			return $config[$param];
 		}
 	}
 
@@ -133,27 +132,46 @@
 
 
 	function getModule($name, $data = array()) {
-		//it is singleton, isn't it?
-		static $modules, $DB;
-		if(!isset($modules)) {
-			$modules = array();
+		$DB = dataRepo('getModule_DB');
+		if($DB == null) {
 			$DB = initDatabase();
+			dataRepo('getModule_DB', $DB);
 		}
-		if(!isset($modules[$name])) {
+		$repo_key = 'getModule|'.$name;
+		$module = dataRepo($repo_key);
+		if($module == null) {
 			$file = ROOT_DIR.'/app/modules/'.$name.'.php';
 			if(!allowIncludeFile($file)) {
 				throw new LoadException('Module "'.$name.'" can not be loaded');
 			} else {
 				include($file);
 				$classname = preg_replace('#[^a-z0-9\_]#i', '_', 'Module_'.$name);
-				$modules[$name] = new $classname($DB, $data);
+				$module = new $classname($DB, $data);
+				dataRepo($repo_key, $module);
 			}
 		}
-		return $modules[$name];
+		return $module;
 	}
 
 
 	class LoadException extends Exception { }
+
+
+
+	// ===== REPO
+
+	function dataRepo($key, $val = null) {
+		//it is singleton, isn't it?
+		static $repo;
+		if(!isset($repo)) {
+			$repo = array();
+		}
+		if($val != null) {
+			$repo[$key] = $val;
+		} else {
+			return isset($repo[$key]) ? $repo[$key] : null;
+		}
+	}
 
 
 
