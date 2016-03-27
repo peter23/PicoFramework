@@ -1,3 +1,3 @@
 <?php
 
-	echo 'Hello, World!';
+	runView('_default');
