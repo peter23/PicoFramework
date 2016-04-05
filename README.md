@@ -19,13 +19,14 @@ Just a try to make really fast and light (and stupid) framework.
 - `app/controllers` - controllers. Paths to controllers define routes (see below Routing).
 - `app/controllers/_404.php` - 404 page
 - `app/controllers/_default.php` - controller for "/"
+- `middlewares`
 - `app/views` - templates
 - `app/custom.php` - place for app-wide code
 - `app/modules` - modules/models
 - `s` - directory for static files. Can be changed in "paths" config.
 - `system` - core files
 - `system/core.php` - core (see below Core)
-- `system/fluentpdo` - third-party library - SQL query builder
+- `system/PicoDatabase` - SQL query builder and MySQLi wrapper
 - `index.php` - entry point
 
 ### Routing
@@ -67,7 +68,7 @@ If the file is not exists, then it will just go to the next point (do not QParam
 
 - `getRunView ($name[, $data])`. Calls `runView` and returns its output as a variable.
 
-- `getModule ($name)`. Modules are php files, which should contain class Module\_$name. All special characters in $name will be replaced with "\_". That class can extends BaseModule, which just provides $class->DB variable with FluentPDO instance. Any module will be created only once, further calls will receive existing instance (singleton).
+- `getModule ($name)`. Modules are php files, which should contain class Module\_$name. All special characters in $name will be replaced with "\_". That class can extends BaseModule, which just provides $class->DB variable with PicoDatabase instance. Any module will be created only once, further calls will receive existing instance (singleton).
 
 - `_U ($q[, $params])`. Returns URL of controller $q with GET parameters $params. $params can be a string or an array. It considers BASE\_URL from "paths" config.
 

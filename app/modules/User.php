@@ -25,21 +25,21 @@
 
 		public function auth($email, $password) {
 			if(!($password_salt = $this->DB
-				->from('users')
 				->select('password_salt')
+				->from('users')
 				->where('email', $email)
-				->fetch('password_salt')
+				->fetchVal()
 			)) {
 				throw new MsgException('Incorrect email or password');
 			}
 			if(!($id = $this->DB
-				->from('users')
 				->select('id')
+				->from('users')
 				->where(array(
 					'email' => $email,
 					'password' => hash('sha256', $password_salt.$password),
 				))
-				->fetch('id')
+				->fetchVal()
 			)) {
 				throw new MsgException('Incorrect email or password');
 			}
@@ -49,8 +49,8 @@
 
 		public function getDataByUId($id) {
 			return $this->DB
+				->select('id', 'email', 'is_admin')
 				->from('users')
-				->select(array('id', 'email', 'is_admin'))
 				->where('id', $id)
 				->fetch();
 		}

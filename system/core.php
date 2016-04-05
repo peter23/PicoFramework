@@ -135,9 +135,9 @@
 
 
 	function initDatabase() {
-		require_once(ROOT_DIR.'/system/fluentpdo/FluentPDO.php');
+		require_once(ROOT_DIR.'/system/PicoDatabase/PicoDatabase.php');
 		$cfg = getConfig('db');
-		return new FluentPDO('mysql:host='.$cfg['HOST'].';dbname='.$cfg['NAME'].';charset=utf8', $cfg['USER'], $cfg['PASS']);
+		return new PicoDatabase($cfg['HOST'], $cfg['USER'], $cfg['PASS'], $cfg['NAME'], 'utf8');
 	}
 
 
