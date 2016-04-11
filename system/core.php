@@ -47,7 +47,7 @@
 	function getConfig($name, $param = false) {
 		$repo_key = 'getConfig|'.$name;
 		$config = dataRepo($repo_key);
-		if($config == null) {
+		if($config === null) {
 			$file = ROOT_DIR.'/app/config/'.$name.'.php';
 			if(!allowIncludeFile($file)) {
 				throw new LoadException('Config "'.$name.'" can not be loaded');
@@ -88,7 +88,7 @@
 			);
 			foreach($files as $file) {
 				if(allowIncludeFile($file)) {
-					if(strlen($try_name) != strlen($name)) {
+					if(strlen($try_name) !== strlen($name)) {
 						$qparam_controllers = getConfig('qparam_controllers');
 						if(isset($qparam_controllers[$try_name])) {
 							$_QPARAM = substr($name, strlen($try_name)+1);
@@ -143,13 +143,13 @@
 
 	function getModule($name, $data = array()) {
 		$DB = dataRepo('getModule_DB');
-		if($DB == null) {
+		if($DB === null) {
 			$DB = initDatabase();
 			dataRepo('getModule_DB', $DB);
 		}
 		$repo_key = 'getModule|'.$name;
 		$module = dataRepo($repo_key);
-		if($module == null) {
+		if($module === null) {
 			$file = ROOT_DIR.'/app/modules/'.$name.'.php';
 			if(!allowIncludeFile($file)) {
 				throw new LoadException('Module "'.$name.'" can not be loaded');
@@ -176,7 +176,7 @@
 		if(!isset($repo)) {
 			$repo = array();
 		}
-		if($val != null) {
+		if($val !== null) {
 			$repo[$key] = $val;
 		} else {
 			return isset($repo[$key]) ? $repo[$key] : null;
@@ -213,7 +213,7 @@
 		if(!is_array($s)) {
 			return htmlspecialchars($s, ENT_QUOTES, 'UTF-8');
 		} else {
-			if(defined('DONT_ESCAPE') && (count($s) == 2) && isset($s[0]) && ($s[0] == DONT_ESCAPE)) {
+			if(defined('DONT_ESCAPE') && (count($s) === 2) && isset($s[0]) && ($s[0] === DONT_ESCAPE)) {
 				return $s[1];
 			} else {
 				foreach($s as &$s1) {
