@@ -109,13 +109,6 @@
 	}
 
 
-	function getRunController($name, $data = array()) {
-		ob_start();
-		runController($name, $data);
-		return ob_get_clean();
-	}
-
-
 	function runView($name, $data = array()) {
 		$file = ROOT_DIR.'/app/views/'.$name.'.php';
 		if(!allowIncludeFile($file)) {
@@ -124,13 +117,6 @@
 			extract(htmlEscape($data));
 			include($file);
 		}
-	}
-
-
-	function getRunView($name, $data = array()) {
-		ob_start();
-		runView($name, $data);
-		return ob_get_clean();
 	}
 
 
