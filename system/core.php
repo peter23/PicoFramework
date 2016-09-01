@@ -80,18 +80,18 @@
 		}
 
 		//here is very-super-light and stupid routing
-		$try_name = $name;
+		$_QNAME = $name;
 		do {
 			$files = array(
-				ROOT_DIR.'/app/controllers'.$try_name.'.php',
-				ROOT_DIR.'/app/controllers'.$try_name.'/_default.php',
+				ROOT_DIR.'/app/controllers'.$_QNAME.'.php',
+				ROOT_DIR.'/app/controllers'.$_QNAME.'/_default.php',
 			);
 			foreach($files as $file) {
 				if(allowIncludeFile($file)) {
-					if(strlen($try_name) !== strlen($name)) {
+					if(strlen($_QNAME) !== strlen($name)) {
 						$qparam_controllers = getConfig('qparam_controllers');
-						if(isset($qparam_controllers[$try_name])) {
-							$_QPARAM = substr($name, strlen($try_name)+1);
+						if(isset($qparam_controllers[$_QNAME])) {
+							$_QPARAM = substr($name, strlen($_QNAME)+1);
 						} else {
 							break 2;
 						}
@@ -104,7 +104,7 @@
 					return;
 				}
 			}
-		} while( ($try_name = dirname($try_name)) && (strlen($try_name) > 1) );
+		} while( ($_QNAME = dirname($_QNAME)) && (strlen($_QNAME) > 1) );
 		throw new LoadException('Controller "'.$name.'" can not be loaded');
 	}
 
