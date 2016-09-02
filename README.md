@@ -18,7 +18,7 @@ Just a try to make really fast and light (and stupid) framework.
 - `app/config/qparam_controllers.php` - list of controllers that can accept a part of the route as a parameter (see below Routing)
 - `app/controllers` - controllers. Controllers paths are defining routes (see below Routing).
 - `app/controllers/_404.php` - 404 page
-- `app/controllers/_default.php` - a controller for "/"
+- `app/controllers/_default.php` - a controller for "/". Basically it is optional file.
 - `app/middlewares` - middlewares (see below Middlewares).
 - `app/views` - templates
 - `app/custom.php` - a place for the app-wide code
@@ -28,6 +28,8 @@ Just a try to make really fast and light (and stupid) framework.
 - `system/core.php` - the core (see below Core)
 - `system/PicoDatabase` - SQL query builder and MySQLi wrapper
 - `index.php` - entry point
+
+All files from the list above are required. There are also other files (modules, middlewares, etc.), which just contain some sample code.
 
 ### Routing
 
