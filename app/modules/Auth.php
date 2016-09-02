@@ -1,6 +1,6 @@
 <?php
 
-	class Module_Auth extends BaseModule {
+	class Module_Auth {
 
 		public $auth_user_id;
 		public $auth_user_data;

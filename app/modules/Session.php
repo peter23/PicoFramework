@@ -1,6 +1,6 @@
 <?php
 
-	class Module_Session extends BaseModule {
+	class Module_Session {
 
 		public $data;
 

@@ -1,9 +1,9 @@
 <?php
 
-	class Module_EMail extends BaseModule {
+	class Module_EMail {
 
 		public function sendView($to, $view, $view_data = array(), $from_email = false, $from_name = false) {
-			$text = getRunView($view, $view_data);
+			$text = getModule('Utils')->getRunView($view, $view_data);
 			$subject = strtok($text, "\n");
 			$text = substr($text, strlen($subject)+1);
 			$subject = strip_tags($subject);

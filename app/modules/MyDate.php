@@ -1,6 +1,6 @@
 <?php
 
-	class Module_MyDate extends BaseModule {
+	class Module_MyDate {
 
 		public $dt;
 
