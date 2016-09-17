@@ -71,6 +71,9 @@
 	function getMiddlewares($name) {
 		//here is middleware processing
 		$middlewares = array();
+		if(allowIncludeFile(ROOT_DIR.'/app/middlewares/_init.php')) {
+			$middlewares[] = '/_init';
+		}
 		$try_name = $name;
 		do {
 			if(allowIncludeFile(ROOT_DIR.'/app/middlewares'.$try_name.'.php')) {
@@ -247,3 +250,7 @@
 		}
 
 	}
+
+
+
+	require(ROOT_DIR.'/app/custom.php');

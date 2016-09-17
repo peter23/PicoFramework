@@ -57,6 +57,8 @@ If the file is not exists, then it will just go to the next point (do not QParam
 
 A middleware can know which controller is processed from the variable `$_QNAME`.
 
+`_init` is processed at first, `_default` at last.
+
 
 ### Core
 
