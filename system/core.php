@@ -12,6 +12,7 @@
 
 
 	define('ROOT_DIR', dirname(__DIR__));
+	define('APP_DIR', ROOT_DIR.'/app');
 
 
 	// ===== CORE
@@ -52,7 +53,7 @@
 		$repo_key = 'getConfig|'.$name;
 		$config = dataRepo($repo_key);
 		if($config === null) {
-			$file = ROOT_DIR.'/app/config/'.$name.'.php';
+			$file = APP_DIR.'/config/'.$name.'.php';
 			if(!allowIncludeFile($file)) {
 				throw new LoadException('Config "'.$name.'" can not be loaded');
 			} else {
@@ -71,16 +72,16 @@
 	function getMiddlewares($name) {
 		//here is middleware processing
 		$middlewares = array();
-		if(allowIncludeFile(ROOT_DIR.'/app/middlewares/_init.php')) {
+		if(allowIncludeFile(APP_DIR.'/middlewares/_init.php')) {
 			$middlewares[] = '/_init';
 		}
 		$try_name = $name;
 		do {
-			if(allowIncludeFile(ROOT_DIR.'/app/middlewares'.$try_name.'.php')) {
+			if(allowIncludeFile(APP_DIR.'/middlewares'.$try_name.'.php')) {
 				$middlewares[] = $try_name;
 			}
 		} while( ($try_name = dirname($try_name)) && (strlen($try_name) > 1) );
-		if(allowIncludeFile(ROOT_DIR.'/app/middlewares/_default.php')) {
+		if(allowIncludeFile(APP_DIR.'/middlewares/_default.php')) {
 			$middlewares[] = '/_default';
 		}
 		return $middlewares;
@@ -92,8 +93,8 @@
 		$_QNAME = $name;
 		do {
 			$files = array(
-				ROOT_DIR.'/app/controllers'.$_QNAME.'.php',
-				ROOT_DIR.'/app/controllers'.$_QNAME.'/_default.php',
+				APP_DIR.'/controllers'.$_QNAME.'.php',
+				APP_DIR.'/controllers'.$_QNAME.'/_default.php',
 			);
 			foreach($files as $file) {
 				if(allowIncludeFile($file)) {
@@ -106,7 +107,7 @@
 						}
 					}
 					foreach($middlewares as $middleware) {
-						include(ROOT_DIR.'/app/middlewares'.$middleware.'.php');
+						include(APP_DIR.'/middlewares'.$middleware.'.php');
 					}
 					extract($data);
 					include($file);
@@ -119,7 +120,7 @@
 
 
 	function runView($name, $data = array()) {
-		$file = ROOT_DIR.'/app/views/'.$name.'.php';
+		$file = APP_DIR.'/views/'.$name.'.php';
 		if(!allowIncludeFile($file)) {
 			throw new LoadException('View "'.$name.'" can not be loaded');
 		} else {
@@ -145,7 +146,7 @@
 		$repo_key = 'getModule|'.$name;
 		$module = dataRepo($repo_key);
 		if($module === null) {
-			$file = ROOT_DIR.'/app/modules/'.$name.'.php';
+			$file = APP_DIR.'/modules/'.$name.'.php';
 			if(!allowIncludeFile($file)) {
 				throw new LoadException('Module "'.$name.'" can not be loaded');
 			} else {
@@ -253,4 +254,4 @@
 
 
 
-	require(ROOT_DIR.'/app/custom.php');
+	require(APP_DIR.'/custom.php');
