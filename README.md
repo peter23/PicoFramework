@@ -15,7 +15,6 @@ Just a try to make really fast and light (and stupid) framework.
 - `app/config` - configuration files
 - `app/config/db.php` - a database config
 - `app/config/paths.php` - a paths config
-- `app/config/qparam_controllers.php` - list of controllers that can accept a part of the route as a parameter (see below Routing)
 - `app/controllers` - controllers. Controllers paths are defining routes (see below Routing).
 - `app/controllers/_404.php` - 404 page
 - `app/controllers/_default.php` - a controller for "/". Basically it is optional file.
@@ -39,26 +38,28 @@ Framework takes a route from a config "paths", an element "ROUTE". Then it searc
 
 2) `app/controllers/hello/world/123/_default.php`
 
-3) `app/controllers/hello/world.php`
-This controller will be used only if there is an "/hello/world" element in the "qparam_controllers" config. Also "123" will be put in `$_QPARAM` variable (in controller's scope).
-If there is no "/hello/world" in the "qparam_controllers" config, then processing of this route will be stopped and LoadException will be thrown.
+3) `app/controllers/hello/world._QPARAM.php`
+"123" will be put in `$_QPARAM` variable (in controller's scope).
 
-4) `app/controllers/hello/world/_default.php`. QParam mechanism will work similarly to the point 3.
+4) `app/controllers/hello/world/_default._QPARAM.php`. QParam mechanism will work similarly to the point 3.
 
-5) `app/controllers/hello.php`. Similarly to the point 3, but it will need "/hello" in the "qparam_controllers" config and `$_QPARAM` will be equal to "world/123".
+5) `app/controllers/hello._QPARAM.php`. Similarly to the point 3, but `$_QPARAM` will be equal to "world/123".
 
-6) `app/controllers/hello/_default.php`. Similarly to the point 5.
+6) `app/controllers/hello/_default._QPARAM.php`. Similarly to the point 5.
 
-7) `app/controllers/_default.php`. Similarly to the point 3, but it will need "/" in the "qparam_controllers" config and `$_QPARAM` will be equal to "hello/world/123".
+7) `app/controllers/_default._QPARAM.php`. Similarly to the point 3, but `$_QPARAM` will be equal to "hello/world/123".
 
 If the file is not exists, then it will just go to the next point (do not QParam checks). If the file is exists then it will stop anyway (after including the file or by LoadException).
 
 ### Middlewares
 
+Middleware will be run if it matches to controller name or its part.
+
+For example you can check authentication in /auth middleware, so all /auth/* controllers will be available only for authenticated users.
+
+`/_init` middleware will be run at first (if exists) and `/_default` at last (if exists).
+
 A middleware can know which controller is processed from the variable `$_QNAME`.
-
-`_init` is processed at first, `_default` at last.
-
 
 ### Core
 
