@@ -99,9 +99,10 @@
 			foreach($files as $file) {
 				if(allowIncludeFile($file)) {
 					if(strlen($_QNAME) !== strlen($name)) {
-						$qparam_controllers = getConfig('qparam_controllers');
-						if(isset($qparam_controllers[$_QNAME])) {
+						$file_qparam = substr($file, 0, -4).'._QPARAM.php';
+						if(allowIncludeFile($file_qparam)) {
 							$_QPARAM = substr($name, strlen($_QNAME)+1);
+							$file = $file_qparam;
 						} else {
 							break 2;
 						}
