@@ -131,7 +131,7 @@
 	}
 
 
-	function initDatabase() {
+	function getDatabaseConnection() {
 		require_once(ROOT_DIR.'/system/PicoDatabase/PicoDatabase.php');
 		$cfg = getConfig('db');
 		return new PicoDatabase($cfg['HOST'], $cfg['USER'], $cfg['PASS'], $cfg['NAME'], 'utf8');
@@ -141,7 +141,7 @@
 	function getModule($name, $data = array()) {
 		$DB = dataRepo('getModule_DB');
 		if($DB === null) {
-			$DB = initDatabase();
+			$DB = getDatabaseConnection();
 			dataRepo('getModule_DB', $DB);
 		}
 		$repo_key = 'getModule|'.$name;
@@ -210,7 +210,7 @@
 		if(!is_array($s)) {
 			return htmlspecialchars($s, ENT_QUOTES, 'UTF-8');
 		} else {
-			if(defined('DONT_ESCAPE') && (count($s) === 2) && isset($s[0]) && ($s[0] === DONT_ESCAPE)) {
+			if((count($s) === 2) && isset($s[0]) && ($s[0] === dataRepo('DONT_ESCAPE'))) {
 				return $s[1];
 			} else {
 				foreach($s as &$s1) {
@@ -222,11 +222,11 @@
 	}
 
 	function dontHtmlEscape($v) {
-		if(!defined('DONT_ESCAPE')) {
+		if(!dataRepo('DONT_ESCAPE')) {
 			//quite unique
-			define('DONT_ESCAPE', '^%DONT_ESCAPE_'.microtime(true));
+			dataRepo('DONT_ESCAPE', '^%DONT_ESCAPE_'.microtime(true));
 		}
-		return array(DONT_ESCAPE, $v);
+		return array(dataRepo('DONT_ESCAPE'), $v);
 	}
 
 	function formatException(&$e) {

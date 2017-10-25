@@ -75,7 +75,7 @@ A middleware can know which controller is processed from the variable `$_QNAME`.
 
 - `runView ($name[, $data])`. Runs (just `include()`s) specified view. `extract()`s html-escaped `$data` to view's scope.
 
-- `initDatabase ()`. Creates and returns new instance (does not use existing) of PicoDatabase.
+- `getDatabaseConnection ()`. Creates and returns new instance (does not use existing) of PicoDatabase.
 
 - `getModule ($name[, $data])`. Modules are php files, which should contain class Module\_$name. All special characters in `$name` will be replaced with "\_". That class can extend BaseModule, which just provides $this->DB variable with PicoDatabase instance. Any module object will be created only once, further calls will receive existing instance (like singleton).
 

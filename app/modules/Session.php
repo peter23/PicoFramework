@@ -8,6 +8,7 @@
 		private $session_internal_name = 'PicoFramework';
 
 		public function __construct() {
+			ini_set('session.gc_maxlifetime', 86400);
 			session_name($this->session_name);
 			session_set_cookie_params(86400);
 			session_start();
