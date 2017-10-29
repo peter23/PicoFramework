@@ -229,7 +229,10 @@
 		return array(dataRepo('DONT_ESCAPE'), $v);
 	}
 
-	function formatException(&$e) {
+	function formatException(&$e, $include_file = true) {
+		if($include_file) {
+			$file_line = $e->getFile().':'.$e->getLine();
+		}
 		$trace = $e->getTrace();
 		foreach($trace as &$trace1) {
 			$trace1 = (isset($trace1['file']) ? $trace1['file'] : '<unknown file>')
@@ -237,7 +240,7 @@
 				.':'.(isset($trace1['function']) ? $trace1['function'] : '<unknown function>');
 		}
 		unset($trace1);
-		return "\n".$e->getMessage()."\n".implode("\n", $trace)."\n";
+		return "\n".$e->getMessage()."\n".($include_file ? $file_line."\n" : '').implode("\n", $trace)."\n";
 	}
 
 
