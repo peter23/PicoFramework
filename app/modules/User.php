@@ -2,25 +2,17 @@
 
 	class Module_User extends BaseModule {
 
-		public function generateRandomString($length) {
-			$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-			$charactersLength = strlen($characters);
-			$randomString = '';
-			for($i = 0; $i < $length; $i++) {
-				$randomString .= $characters[mt_rand(0, $charactersLength - 1)];
-			}
-			return $randomString;
-		}
-
-		public function create($email, $password) {
-			$password_salt = $this->generateRandomString(8);
+		public function create($email, $password, $role) {
+			$password_salt = getModule('Utils')->generateRandomString(8);
 			$this->DB
 				->insertInto('users', array(
 					'email' => $email,
-					'password' => hash('sha256', $password_salt.$password),
+					'password' => hash('sha256', hash('sha256', hash('sha256', $password_salt.$password))),
 					'password_salt' => $password_salt,
+					'role' => $role,
 				))
 				->execute();
+			return $this->DB->insert_id;
 		}
 
 		public function auth($email, $password) {
@@ -37,7 +29,7 @@
 				->from('users')
 				->where(array(
 					'email' => $email,
-					'password' => hash('sha256', $password_salt.$password),
+					'password' => hash('sha256', hash('sha256', hash('sha256', $password_salt.$password))),
 				))
 				->fetchVal()
 			)) {
@@ -49,10 +41,18 @@
 
 		public function getDataByUId($id) {
 			return $this->DB
-				->select('id', 'email', 'is_admin')
+				->select('*')
 				->from('users')
 				->where('id', $id)
 				->fetch();
+		}
+
+		public function update($id, $data) {
+			if(isset($data['password']) && $data['password']) {
+				$data['password_salt'] = getModule('Utils')->generateRandomString(8);
+				$data['password'] = hash('sha256', hash('sha256', hash('sha256', $data['password_salt'].$data['password'])));
+			}
+			$this->DB->update('users', $data)->where('id', $id)->execute();
 		}
 
 	}
