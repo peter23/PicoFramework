@@ -94,16 +94,16 @@
 		$_QNAME = $name;
 		do {
 			$files = array(
-				APP_DIR.'/controllers'.$_QNAME.'.php',
-				APP_DIR.'/controllers'.$_QNAME.'/_default.php',
+				APP_DIR.'/controllers'.$_QNAME.'.php' => '',
+				APP_DIR.'/controllers'.$_QNAME.'/_default.php' => '',
+				APP_DIR.'/controllers'.$_QNAME.'._QPARAM.php' => '_QPARAM',
+				APP_DIR.'/controllers'.$_QNAME.'/_default._QPARAM.php' => '_QPARAM',
 			);
-			foreach($files as $file) {
+			foreach($files as $file => $file_type) {
 				if(allowIncludeFile($file)) {
 					if(strlen($_QNAME) !== strlen($name)) {
-						$file_qparam = substr($file, 0, -4).'._QPARAM.php';
-						if(allowIncludeFile($file_qparam)) {
+						if($file_type === '_QPARAM') {
 							$_QPARAM = substr($name, strlen($_QNAME)+1);
-							$file = $file_qparam;
 						} else {
 							break 2;
 						}
