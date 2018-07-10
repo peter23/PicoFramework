@@ -57,7 +57,7 @@ Middleware will be run if it matches to controller name or its part.
 
 For example you can check authentication in /auth middleware, so all /auth/* controllers will be available only for authenticated users.
 
-`/_init` middleware will be run at first (if exists) and `/_default` at last (if exists).
+`/_default` middleware will be run at first (if exists) and `/_zzz_last` at last (if exists).
 
 A middleware can know which controller is processed from the variable `$_QNAME`.
 

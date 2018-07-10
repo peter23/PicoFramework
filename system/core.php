@@ -72,8 +72,8 @@
 	function getMiddlewares($name) {
 		//here is middleware processing
 		$middlewares = array();
-		if(allowIncludeFile(APP_DIR.'/middlewares/_init.php')) {
-			$middlewares[] = '/_init';
+		if(allowIncludeFile(APP_DIR.'/middlewares/_zzz_last.php')) {
+			$middlewares[] = '/_zzz_last';
 		}
 		$try_name = $name;
 		do {
@@ -84,6 +84,7 @@
 		if(allowIncludeFile(APP_DIR.'/middlewares/_default.php')) {
 			$middlewares[] = '/_default';
 		}
+		$middlewares = array_reverse($middlewares);
 		return $middlewares;
 	}
 
