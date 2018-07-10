@@ -180,6 +180,15 @@
 		}
 	}
 
+	function dataRepoPush($key, $val) {
+		$arr = dataRepo($key);
+		if(!is_array($arr)) {
+			$arr = array();
+		}
+		$arr[] = $val;
+		dataRepo($key, $arr);
+	}
+
 
 
 	// ===== UTILS

@@ -81,6 +81,8 @@ A middleware can know which controller is processed from the variable `$_QNAME`.
 
 - `dataRepo ($key[, $val])`. Simple function to store data in the memory. Basically it is used just instead of a global variable. If `$val` is specified, then it will store the value. Otherwise it will return stored value (or null).
 
+- `dataRepoPush ($key[, $val])`. Simple function to store data in the array in the memory. Basically it is used just instead of a global variable. If `$val` is specified, then it will store the value in the array with name `$key`. Otherwise it will return stored array with name `$key` (or null).
+
 - `_U ($q[, $params])`. Returns URL of controller `$q` with GET parameters `$params`. `$params` can be a string or an array. It considers "BASE\_URL" from the "paths" config.
 
 - `_US ($q)`. Returns URL of the static file `$q`. It considers "STATIC\_BASE\_URL" from the "paths" config.
