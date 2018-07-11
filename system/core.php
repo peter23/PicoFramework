@@ -36,9 +36,9 @@
 
 	function allowIncludeFile($file) {
 		if(
-			(strpos($file, '../')!==false)
+			(strpos($file, '../') !== false)
 			||
-			(strpos($file, '/..')!==false)
+			(strpos($file, '/..') !== false)
 			||
 			(!file_exists($file))
 		) {
@@ -94,19 +94,22 @@
 		$_QNAME = $name;
 		do {
 			$files = array(
-				APP_DIR.'/controllers'.$_QNAME.'.php' => '',
-				APP_DIR.'/controllers'.$_QNAME.'/_default.php' => '',
 				APP_DIR.'/controllers'.$_QNAME.'._QPARAM.php' => '_QPARAM',
+				APP_DIR.'/controllers'.$_QNAME.'.php' => '',
 				APP_DIR.'/controllers'.$_QNAME.'/_default._QPARAM.php' => '_QPARAM',
+				APP_DIR.'/controllers'.$_QNAME.'/_default.php' => '',
 			);
+			$please_break = false;
 			foreach($files as $file => $file_type) {
 				if(allowIncludeFile($file)) {
-					if(strlen($_QNAME) !== strlen($name)) {
-						if($file_type === '_QPARAM') {
-							$_QPARAM = substr($name, strlen($_QNAME)+1);
-						} else {
-							break 2;
-						}
+					$is_qparam_file = $file_type === '_QPARAM';
+					$is_sub_path = strlen($_QNAME) !== strlen($name);
+					if($is_qparam_file ^ $is_sub_path) {
+						$please_break = true;
+						continue;
+					}
+					if($is_qparam_file && $is_sub_path) {
+						$_QPARAM = substr($name, strlen($_QNAME)+1);
 					}
 					foreach($middlewares as $middleware) {
 						include(APP_DIR.'/middlewares'.$middleware.'.php');
@@ -116,6 +119,7 @@
 					return;
 				}
 			}
+			if($please_break)  break;
 		} while( ($_QNAME = dirname($_QNAME)) && (strlen($_QNAME) > 1) );
 		throw new LoadException('Controller "'.$name.'" can not be loaded');
 	}
@@ -171,9 +175,7 @@
 	function dataRepo($key, $val = null) {
 		//it is singleton, isn't it?
 		static $repo;
-		if(!isset($repo)) {
-			$repo = array();
-		}
+		if(!isset($repo))  $repo = array();
 		if($val !== null) {
 			$repo[$key] = $val;
 		} else {
@@ -183,9 +185,7 @@
 
 	function dataRepoPush($key, $val) {
 		$arr = dataRepo($key);
-		if(!is_array($arr)) {
-			$arr = array();
-		}
+		if(!is_array($arr))  $arr = array();
 		$arr[] = $val;
 		dataRepo($key, $arr);
 	}
@@ -203,9 +203,7 @@
 			} else {
 				$ret .= '&';
 			}
-			if(is_array($params)) {
-				$params = http_build_query($params);
-			}
+			if(is_array($params))  $params = http_build_query($params);
 			$ret .= $params;
 		}
 		return $ret;
@@ -220,7 +218,7 @@
 		if(!is_array($s)) {
 			return htmlspecialchars($s, ENT_QUOTES, 'UTF-8');
 		} else {
-			if((count($s) === 2) && isset($s[0]) && ($s[0] === dataRepo('DONT_ESCAPE'))) {
+			if( (count($s) === 2) && isset($s[0]) && ($s[0] === dataRepo('DONT_ESCAPE')) ) {
 				return $s[1];
 			} else {
 				foreach($s as &$s1) {
